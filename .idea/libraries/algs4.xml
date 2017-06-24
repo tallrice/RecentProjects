@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="algs4">
     <CLASSES>
-      <root url="jar://$USER_HOME$/myCLASSPATH/algs4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ExternalLibraries/algs4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/myCLASSPATH/algs4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ExternalLibraries/algs4.jar!/" />
     </SOURCES>
   </library>
 </component>
