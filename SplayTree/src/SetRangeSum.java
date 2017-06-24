@@ -188,13 +188,105 @@ public class SetRangeSum {
 
     void erase(int x) {
         // Implement erase yourself
+        // This code derived from the lecture *video*;
+        // The lecture PDF does not show the correct implementation.
+        Vertex v = findBST(x, root);
+        if (v == null) return;
+        if (nextBST(v) != null) splay(nextBST(v));
+        else if (v.parent != null) splay(v.parent);
+        if (v.key == x) {
+            splay(v);
+            Vertex left = v.left;
+            Vertex right = v.right;
+            if (left != null) left.parent = null;
+            if (right != null) right.parent = null;
+            root = merge(left, right);
+            v.left = null;
+            v.right = null;
+            v.parent = null;
+            v = null;
+            // left.parent = right;
+            // if (right != null) { // handle v = max
+            //     right.left = left;
+            //     root = right;
+            // }
+            // else root = left;
+            // root.parent = null;
+            update(root);
+        }
+    }
 
+    Vertex nextBST(Vertex x) {
+        if (x.right != null) return treeMinimumBST(x.right);
+        Vertex y = x.parent;
+        while (y != null && x == y.right) {
+            x = y;
+            y = y.parent;
+        }
+        return y;
+    }
+
+    void deleteBST(Vertex z) {
+        if (z.left == null) transplantBST(z, z.right);
+        else if (z.right == null) transplantBST(z, z.left);
+        else {
+            Vertex y = treeMinimumBST(z.right);
+            if (y.parent != z) {
+                transplantBST(y, y.right);
+                y.right = z.right;
+                y.right.parent = y;
+            }
+            transplantBST(z, y);
+            y.left = z.left;
+            y.left.parent = y;
+        }
+    }
+
+    void transplantBST(Vertex u, Vertex v) {
+        if (u.parent == null) root = v;
+        else if (u == u.parent.left) u.parent.left = v;
+        else u.parent.right = v;
+        if (v != null) v.parent = u.parent;
+    }
+
+    Vertex treeMinimumBST(Vertex x) {
+        while (x.left != null) x = x.left;
+        return x;
+    }
+
+    Vertex treeMaximumBST(Vertex x) {
+        while (x.right != null) x = x.right;
+        return x;
     }
 
     boolean find(int x) {
         // Implement find yourself
+        if (root == null) return false;
+        Vertex v = findBST(x, root);
+        if (v == null) return false;
+        splay(v);
+        root = v;
+        return (v.key == x);
+    }
 
-        return false;
+    // Vertex findBST(int x, Vertex root) {
+    //     if (root == null || root.key == x) return root;
+    //     else if (root.key > x) {
+    //         if (root.left != null) return findBST(x, root.left);
+    //         else return root;
+    //     }
+    //     else return findBST(x, root.right);
+    // }
+
+    Vertex findBST(int x, Vertex root) {
+        while (root != null && root.key != x) {
+            if (root.key > x) {
+                if (root.left != null) root = root.left;
+                else return root;
+            }
+            else root = root.right;
+        }
+        return root;
     }
 
     long sum(int from, int to) {
@@ -206,10 +298,13 @@ public class SetRangeSum {
         Vertex right = middleRight.right;
         long ans = 0;
         // Complete the implementation of sum
-
+        update(middle);
+        if (middle != null) ans = middle.sum;
+        else ans = 0;
+        Vertex newLeftMiddle = merge(left, middle);
+        root = merge(newLeftMiddle, right);
         return ans;
     }
-
 
     public static final int MODULO = 1000000001;
 
